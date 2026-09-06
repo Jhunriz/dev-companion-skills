@@ -43,6 +43,7 @@ Make sure `opencode.json` includes `"paths": [".opencode/skills", ".agents/skill
 | `api-designer` | REST/tRPC API design, endpoints, request/response formats | "API endpoint", "REST design", "tRPC procedure", "request format" |
 | `db-migrator` | Database migration workflows, schema conventions, naming | "migration", "schema", "create table", "add column", "rollback" |
 | `skill-template` | Template for creating new custom skills | "create skill", "new skill", "make skill" |
+| `ci-cd` | CI/CD pipelines, deployment, testing automation | "CI", "CD", "deploy", "pipeline", "build", "test pipeline", "automation" |
 
 ## 🛠️ Adding Skills
 
