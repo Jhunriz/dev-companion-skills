@@ -5,7 +5,23 @@ description: Write git commit messages and pull request (PR) descriptions. Use t
 
 # Git Commit & PR Messages
 
-Write commit messages in **Conventional Commits** format and PR descriptions in a **Summary / Changes / Testing / Screenshots** format, based on the actual code changes.
+Write commit messages in **Conventional Commits** format and PR descriptions in a **Summary / Changes / Testing / Screenshots** format, based on the actual code changes. Every commit automatically includes the author's git user name.
+
+## Author Detection (always first)
+
+Before any commit or PR work, automatically fetch the git user name:
+
+```bash
+git config user.name
+```
+
+Use the returned name as the default author for all commit messages. If `git config user.name` returns nothing, fall back to checking:
+
+```bash
+git log --format='%an' -1
+```
+
+Always include the author name in the commit metadata and mention it in the output.
 
 ## Before writing anything
 
@@ -15,6 +31,7 @@ Always ground the message in the real diff — never invent changes.
    - `git diff --staged` (for a commit message, staged changes)
    - `git diff main...HEAD` or `git log main..HEAD -p` (for a PR spanning multiple commits)
 2. If Claude has no shell/repo access and the user hasn't pasted a diff, ask them to paste `git diff` output or describe the changes concretely — don't guess from a vague description.
+3. Run `git config user.name` to get the author name for every commit.
 
 ## Commit messages (Conventional Commits)
 
@@ -36,6 +53,23 @@ Rules:
 - One logical change per commit message. If the diff clearly bundles unrelated changes, say so and suggest splitting instead of writing one message that papers over it.
 - If a change is breaking, add a `BREAKING CHANGE:` footer describing the impact and migration.
 - Reference issues in the footer (`Fixes #123`, `Refs #456`) when the user mentions an issue/ticket number — never fabricate one.
+- **Always prepend the author name** obtained from `git config user.name` to the commit metadata.
+
+## Generating the commit command
+
+After writing the commit message, automatically generate the command including the author name:
+
+```bash
+git commit -m "<commit message>" --author="$(git config user.name)"
+```
+
+Or for multi-line messages:
+
+```bash
+git commit -m "subject line" -m "body" -m "footer" --author="$(git config user.name)"
+```
+
+If the user has already staged changes, use `git commit` with the `--author` flag automatically. Never ask the user to manually add the author — detect and inject it.
 
 ## PR descriptions
 
@@ -62,9 +96,10 @@ Rules:
 - Keep the Summary about *why*, not a re-listing of the Changes bullets.
 - Don't claim testing that wasn't described to you — ask or say "not verified" rather than inventing test coverage.
 - If the repo has a `.github/PULL_REQUEST_TEMPLATE.md` or similar, check for it and follow its structure instead of the default above, merging in the Summary/Changes/Testing/Screenshots content where it fits.
+- Include the author name from `git config user.name` in the PR metadata or description footer as `Author: <name>`.
 
 ## Output
 
-- For a single commit message: give the raw message in a code block, ready to paste into `git commit -m` (or `-F` for multi-line).
-- For a PR description: give the markdown in a code block, ready to paste into the PR body.
+- For a single commit message: give the raw message in a code block, ready to paste into `git commit -m` (or `-F` for multi-line), **always including `--author="$(git config user.name)"`**.
+- For a PR description: give the markdown in a code block, ready to paste into the PR body, **with `Author: <git config user.name>` included**.
 - Don't wrap the whole response in extra commentary — lead with the message/description itself, then note anything the user should double check (e.g. "couldn't verify testing steps — fill those in").
