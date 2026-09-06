@@ -4,31 +4,36 @@ A collection of reusable AI skills for **opencode**, **Zed**, **Claude Code**, *
 
 ## 📦 Quick Install
 
-### Option 1: Zed Native (Recommended)
-```bash
-# Global (all projects)
-git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git ~/.agents/skills/dev-companion-skills
-ln -s ~/.agents/skills/dev-companion-skills/* ~/.agents/skills/
+### Option 1: zed-skills MCP Server (Recommended for Zed)
+Add the `zed-skills` MCP server to Zed — it auto-discovers all skills from `~/.agents/skills/`, `.agents/skills/`, and other tool directories.
 
-# Or project-local
-git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git .agents/skills/dev-companion-skills
-ln -s .agents/skills/dev-companion-skills/* .agents/skills/
+```json
+// Add to ~/.config/zed/settings.json
+{
+  "context_servers": {
+    "zed-skills": {
+      "command": "npx",
+      "args": ["-y", "zed-skills"]
+    }
+  }
+}
 ```
 
-### Option 2: opencode (Auto-detected by zed-skills MCP)
+Then clone the repo into your project:
 ```bash
-# Global
-git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git ~/.config/opencode/skills/dev-companion-skills
-ln -s ~/.config/opencode/skills/dev-companion-skills/* ~/.config/opencode/skills/
+git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git .agents/skills/dev-companion-skills
+# Or for project-level:
+git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git .agents/skills
+```
 
-# Project-local (add to your project's opencode.json)
-# { "skills": { "paths": [".opencode/skills"] } }
+Restart Zed — all skills will appear in the next conversation.
+
+### Option 2: opencode (Auto-detected)
+```bash
 git clone https://github.com/YOUR_USERNAME/dev-companion-skills.git .opencode/skills/dev-companion-skills
 ln -s .opencode/skills/dev-companion-skills/* .opencode/skills/
 ```
-
-### Option 3: zed-skills MCP Server (Auto-discovers everything)
-Install [zed-skills](https://github.com/Chenkeliang/zed-skills) MCP server in Zed - it automatically finds skills from opencode, Claude Code, Codex, Cursor, and more.
+Make sure `opencode.json` includes `"paths": [".opencode/skills", ".agents/skills"]`.
 
 ## 🎯 Included Skills
 
@@ -55,18 +60,23 @@ cp -r .agents/skills/skill-template .agents/skills/my-new-skill
 
 ```
 dev-companion-skills/
-├── .agents/skills/           # Zed native format
+├── .agents/skills/           # Zed & opencode skills (13 skills)
 │   ├── project-architect/
 │   ├── api-designer/
 │   ├── db-migrator/
-│   └── skill-template/
+│   └── ...
 ├── .opencode/skills/         # opencode format (same content)
 │   ├── project-architect/
 │   ├── api-designer/
 │   ├── db-migrator/
-│   └── skill-template/
-├── opencode.json             # opencode config (registers .opencode/skills)
+│   └── ...
+├── opencode.json             # opencode config (registers both paths)
 └── README.md
+```
+
+**For Zed:** Add `zed-skills` MCP server to `~/.config/zed/settings.json`:
+```json
+{ "context_servers": { "zed-skills": { "command": "npx", "args": ["-y", "zed-skills"] } } }
 ```
 
 ## 🔧 Customization
@@ -81,8 +91,8 @@ Each skill is a starting point - **customize for your stack**:
 
 | Tool | Skill Location | Auto-discovery |
 |------|----------------|----------------|
-| **Zed** | `~/.agents/skills/` or `.agents/skills/` | ✅ Native |
-| **opencode** | `~/.config/opencode/skills/` or `.opencode/skills/` | ✅ Native |
+| **Zed** | `.agents/skills/` | ✅ Via zed-skills MCP |
+| **opencode** | `.opencode/skills/` or `.agents/skills/` | ✅ Native + zed-skills MCP |
 | **Claude Code** | `~/.claude/skills/` | ✅ Via zed-skills MCP |
 | **Codex** | `~/.codex/skills/` | ✅ Via zed-skills MCP |
 | **Cursor** | `~/.cursor/skills/` | ✅ Via zed-skills MCP |
