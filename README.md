@@ -44,17 +44,33 @@ Make sure `opencode.json` includes `"paths": [".opencode/skills", ".agents/skill
 | `db-migrator` | Database migration workflows, schema conventions, naming | "migration", "schema", "create table", "add column", "rollback" |
 | `skill-template` | Template for creating new custom skills | "create skill", "new skill", "make skill" |
 
-## 🛠️ Creating New Skills
+## 🛠️ Adding Skills
 
+`zed-skills` auto-discovers new skills dynamically — no restart needed. Just drop a folder with a `SKILL.md` in `.agents/skills/` or `~/.agents/skills/`.
+
+### Create a new skill from template
 ```bash
-# Copy template
 cp -r .agents/skills/skill-template .agents/skills/my-new-skill
-
-# Edit the skill
-# 1. Rename folder to match skill name (lowercase, hyphens)
-# 2. Edit SKILL.md - update name, description, and body
-# 3. Restart Zed/opencode (or auto-reload in Zed)
+# Edit .agents/skills/my-new-skill/SKILL.md
 ```
+
+### Create from scratch
+```bash
+mkdir -p .agents/skills/my-new-skill
+# Create .agents/skills/my-new-skill/SKILL.md with:
+# ---
+# name: my-new-skill
+# description: What it does and when to use it
+# ---
+```
+
+### Add from another source
+Clone or copy a skill directory into `.agents/skills/` or `~/.agents/skills/`. The skill must have a `SKILL.md` with at least `name` and `description` in its YAML frontmatter.
+
+**Rules:**
+- Each skill is a subdirectory containing a `SKILL.md` file
+- `SKILL.md` must have YAML frontmatter with `name` and `description`
+- No restart required — `zed-skills` picks up new skills on next conversation
 
 ## 📁 Repository Structure
 
